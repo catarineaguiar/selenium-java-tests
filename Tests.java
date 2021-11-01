@@ -2,6 +2,7 @@ package forms;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -12,6 +13,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Tests {
 	String url;
@@ -88,6 +91,23 @@ public class Tests {
 
 		inputQuestion.sendKeys("Because I'm curious and perfectionist");
 
-		// Select date of birth, submit and assert success message
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+
+		WebElement inputDate = wait.until(ExpectedConditions.elementToBeClickable(
+				By.xpath("//input[contains(@class,'form-control input-group-inset input-group-inset-after')]")));
+
+		inputDate.click();
+
+		inputDate.clear();
+
+		inputDate.sendKeys("02101995");
+
+		driver.manage().timeouts().implicitlyWait(10000, TimeUnit.MILLISECONDS);
+
+		driver.findElement(By.id("ddm-form-submit")).sendKeys(Keys.ENTER);
+
+		String successMessage = driver.findElement(By.xpath("//div[contains(@class,'alert-success')]")).getText();
+
+		assertEquals("Success:Your request completed successfully.", successMessage);
 	}
 }
